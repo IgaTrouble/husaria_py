@@ -1,0 +1,3 @@
+Projekt sql + python.
+Tworzenie bazy wyników zawodników z Husaria Race Team.
+Do opracowania algorytm służący do wyłonienia najlepszego husarza, husarki. 
