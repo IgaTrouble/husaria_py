@@ -54,10 +54,32 @@ CREATE TABLE dystans (
 # tab_logowanie
 CREATE TABLE logowanie (
     id_zawodnika smallint,
-    rola varchar(15), 
+    rola varchar(15) default 'user', 
     login varchar(25) UNIQUE NOT NULL,
     haslo varchar(15) UNIQUE NOT NULL,
     PRIMARY KEY (login),
     FOREIGN KEY (id_zawodnika)
         REFERENCES zawodnicy (id_zawodnika)
 );
+
+create view tab_glowna as select imie,
+    nazwisko,
+    nazwa_dystansu,
+    nazwa_zawodow,
+    miasto_zawodow,
+    miejsce_open,
+    miejsce_elite,
+    miejsce_competitive,
+    czas,
+    data_biegu
+FROM
+    zawodnicy,
+    wyniki,
+    zawody,
+    dystans
+WHERE
+    zawodnicy.id_zawodnika = wyniki.id_zawodnika
+        AND wyniki.id_dystansu = dystans.id_dystansu
+        AND dystans.id_zawodow = zawody.id_zawodow;
+
+select * from tab_glowna;
