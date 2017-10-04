@@ -82,4 +82,28 @@ WHERE
         AND wyniki.id_dystansu = dystans.id_dystansu
         AND dystans.id_zawodow = zawody.id_zawodow;
 
+
+create view moje_wyniki as select imie,
+    nazwisko,
+    nazwa_dystansu,
+    nazwa_zawodow,
+    miasto_zawodow,
+    miejsce_open,
+    miejsce_elite,
+    miejsce_competitive,
+    czas,
+    data_biegu,
+    login 
+FROM
+    zawodnicy,
+    wyniki,
+    zawody,
+    dystans,
+    logowanie
+WHERE
+    zawodnicy.id_zawodnika = wyniki.id_zawodnika
+        AND wyniki.id_dystansu = dystans.id_dystansu
+        AND dystans.id_zawodow = zawody.id_zawodow
+        AND logowanie.id_zawodnika = zawodnicy.id_zawodnika;
 select * from tab_glowna;
+select * from moje_wyniki;
