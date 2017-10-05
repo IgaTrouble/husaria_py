@@ -56,14 +56,16 @@ class Husaria_py:
             data_biegu = v[9]
             print('%10s|%12s|%15s|%15s|%20s|%3i|%3i|%3i|%8s|%10s|' % (imie, nazwisko, nazwa_dystansu, nazwa_zawodow, miasto_zawodow, miejsce_open, miejsce_elite, miejsce_competitive, czas, data_biegu))
     def konsolaUsera(self):
-        while(self.logowanie):
-            konsola = input('Co chcesz zrobić? \n (1) - moje wyniki \n (2) - pokaż ligę   \n (3) - wyloguj ').upper()
+        while(True):
+            konsola = input('Co chcesz zrobić? \n (1) - moje wyniki \n (2) - pokaż ligę   \n (3) - zmień hasło \n (4) - wyloguj ').upper()
             if(konsola == '1'):
                 print(login)
                 self.mojeWyniki()
             if(konsola == '2'):
                 self.ligaHus()
-            elif(konsola =='3'):
+            if(konsola == '3'):
+                self.zmianaHasla()
+            elif(konsola =='4'):
                 print('Powodzenia w dalszych biegach.')
                 break
             else:
@@ -83,6 +85,19 @@ class Husaria_py:
             miejsce_competitive = v[7]
             czas = v[8]
             data_biegu = v[9]
-            print('%10s|%12s|%-15s|%-15s|%-20s|%15s|%15s|%20s|%8s|%10s|' % (imie, nazwisko, nazwa_dystansu, nazwa_zawodow, miasto_zawodow, miejsce_open, miejsce_elite, miejsce_competitive, czas, data_biegu))              
+            print('%10s|%12s|%-15s|%-15s|%-20s|%15s|%15s|%20s|%8s|%10s|' % (imie, nazwisko, nazwa_dystansu, nazwa_zawodow, miasto_zawodow, miejsce_open, miejsce_elite, miejsce_competitive, czas, data_biegu))
+    def zmianaHasla(self):
+        while(True):
+            noweHaslo = input('Podaj nowe hasło: ')
+            potwHaslo = input('Potwierdź nowe hasło: ')
+            if(noweHaslo == potwHaslo):
+                print('Hasło zostało zmienione')
+                self.test_log
+            else:
+                print('Hasło niezgodne. Spróbuj jeszcze raz.')
+                self.zmianaHasla
+            self.cursor.execute("update logowanie set haslo='%s' where login='%s'" % (noweHaslo, login))
+            self.conn.commit()
+            break
 hus1 = Husaria_py()
 hus1.test_log()
