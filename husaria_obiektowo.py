@@ -37,8 +37,7 @@ class Husaria_py:
                 print('Zalogowałeś się poprawnie.')
                 for col in TG:
                     self.userLogged = User(col[0], col[1], col[2], col[3], col[4], col[5], col[6])
-               # hus1.konsolaUsera()
-                return login
+                return True
         except: 
             print('Błędny format.')
     def test_log(self):
@@ -70,14 +69,16 @@ class Husaria_py:
             print('%10s|%12s|%15s|%15s|%20s|%3i|%3i|%3i|%8s|%10s|' % (imie, nazwisko, nazwa_dystansu, nazwa_zawodow, miasto_zawodow, miejsce_open, miejsce_elite, miejsce_competitive, czas, data_biegu))
     def konsolaUsera(self):
         while(self.isLogged):
-            konsola = input('Co chcesz zrobić? \n (1) - moje wyniki \n (2) - pokaż ligę   \n (3) - zmień hasło \n (4) - wyloguj ').upper()
+            konsola = input('Co chcesz zrobić? \n (1) - moje wyniki \n (2) - pokaż ligę   \n (3) - zmień hasło \n (4) - dodaj zawodnika \n (5) - wyloguj ').upper()
             if(konsola == '1'):
                 self.mojeWyniki()
             if(konsola == '2'):
                 self.ligaHus()
             if(konsola == '3'):
                 self.zmianaHasla()
-            elif(konsola =='4'):
+            if(konsola =='4'):
+                self.dodajHus()
+            elif(konsola =='5'):
                 print('Powodzenia w dalszych biegach.')
                 break
             else:
@@ -99,26 +100,34 @@ class Husaria_py:
             data_biegu = v[9]
             print('%10s|%12s|%-15s|%-15s|%-20s|%15s|%15s|%20s|%8s|%10s|' % (imie, nazwisko, nazwa_dystansu, nazwa_zawodow, miasto_zawodow, miejsce_open, miejsce_elite, miejsce_competitive, czas, data_biegu))
     def zmianaHasla(self):
-        while(True):
-            noweHaslo = input('Podaj nowe hasło: ')
-            potwHaslo = input('Potwierdź nowe hasło: ')
-            if(noweHaslo == potwHaslo):
-                print('Hasło zostało zmienione')
-                self.test_log
-                break
-            else:
-                print('Hasło niezgodne. Spróbuj jeszcze raz.')
-                self.zmianaHasla
+        noweHaslo = input('Podaj nowe hasło: ')
+        potwHaslo = input('Potwierdź nowe hasło: ')
+        if(noweHaslo == potwHaslo):
             self.cursor.execute("update logowanie set haslo='%s' where login='%s'" % (noweHaslo, self.userLogged.login))
-            self.conn.commit()
-            break
+            self.conn.commit() 
+            print('Hasło zostało zmienione')
+        else:
+            print('Hasło niezgodne. Spróbuj jeszcze raz.')
     def start(self):
         self.isLogged = hus1.test_log()
         if(self.isLogged):
             self.konsolaUsera()
         else:
-            print('Błąd logowania')        
-        
+            print('Błąd logowania')
+            
+    def dodajHus(self):
+        imie = input('Podaj imię: ')
+        nazwisko = input('Podaj nazwisko: ')
+        data_ur = input('Podaj datę urodzenia: ')
+        plec = input('Podaj płeć (K/M): ')
+        miasto_zawodnika = input('Podaj miasto zawodnika: ')
+        self.cursor.execute("insert into zawodnicy values '%s', '%s', '%s', '%s','%s'" % (imie, nazwisko, data_ur, plec, miasto_zawodnika))
+        #sprawdź format daty pytjon sql 
+        self.conn.commit()
+        input('Podaj login zawodnika: ')
+        input('Podaj hasło zawodnika: ')
+        self.cursor.execute("insert into logowanie values '%s', '%s'" % (login,haslo))
+        self.conn.commit()
 hus1 = Husaria_py()
 hus1.start()
 
