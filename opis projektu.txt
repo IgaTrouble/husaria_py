@@ -4,7 +4,8 @@ Do opracowania algorytm służący do wyłonienia najlepszego husarza, husarki.
 def ligaHus, konieczny algorytm
 
 
-uprawnienia użytkowników
+uprawnienia użytkowników, nowe klasy
 user - dostęp do moje wyniki, do ligii husarii, zapisywanie się na biegi
 koordynator - edycja użytkowników z miasta, j.w., uzupełnianie wyników
 admin - edycja, dodawanie, usuwanie użytkowników, biegów, uzupełnianie wyników
+czy sortować wyniki, czy robić to selectami

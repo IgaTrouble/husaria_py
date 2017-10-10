@@ -2,6 +2,7 @@
 import pymysql
 import os
 import sys
+from datetime import datetime
 sys.path.append('C:/Users/Iga')
 import password.haslo
 # print (os.getcwd())
@@ -114,20 +115,20 @@ class Husaria_py:
             self.konsolaUsera()
         else:
             print('Błąd logowania')
-            
     def dodajHus(self):
-        imie = input('Podaj imię: ')
-        nazwisko = input('Podaj nazwisko: ')
-        data_ur = input('Podaj datę urodzenia: ')
-        plec = input('Podaj płeć (K/M): ')
-        miasto_zawodnika = input('Podaj miasto zawodnika: ')
-        self.cursor.execute("insert into zawodnicy values '%s', '%s', '%s', '%s','%s'" % (imie, nazwisko, data_ur, plec, miasto_zawodnika))
-        #sprawdź format daty pytjon sql 
-        self.conn.commit()
-        input('Podaj login zawodnika: ')
-        input('Podaj hasło zawodnika: ')
-        self.cursor.execute("insert into logowanie values '%s', '%s'" % (login,haslo))
-        self.conn.commit()
+        imie_log = input('Podaj imię: ')
+        nazwisko_log = input('Podaj nazwisko: ')
+        data_ur = datetime.strptime(input('Podaj datę urodzenia: '),'%Y/%m/%d').date()
+        plec = input('Podaj płeć (K/M): ').upper()
+        miasto_zawodnika = input('Podaj miasto zawodnika: ').upper()
+        self.cursor.execute("insert into zawodnicy(imie, nazwisko, data_ur, plec, miasto_zawodnika) values ('%s', '%s', '%s', '%s', '%s')" % (imie_log, nazwisko_log, data_ur, plec, miasto_zawodnika))
+        self.conn.commit() 
+        self.cursor.execute("select id_zawodnika from zawodnicy where imie = '%s' and nazwisko = '%s'" % (imie_log, nazwisko_log))
+        id_zawodnika = self.cursor.fetchall()
+        lista = int(((id_zawodnika[0])[0]))
+        login = input('Podaj login zawodnika: ')
+        haslo = input('Podaj hasło zawodnika: ')
+        self.cursor.execute("insert into logowanie (id_zawodnika, login, haslo) values ('%i', '%s','%s')" % (lista, login, haslo))
+        self.conn.commit() 
 hus1 = Husaria_py()
 hus1.start()
-
