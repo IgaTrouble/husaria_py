@@ -82,9 +82,15 @@ class Husaria_py:
             elif(konsola == '3'):
                 self.zmianaHasla()
             elif(konsola =='4'):
-                self.dodajHus()
-            elif(konsola =='5'):   
-                self.usunHus()
+                if (self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login)) != "admin"):
+                    print('Nie masz uprawnień')
+                else:
+                    self.dodajHus()
+            elif(konsola =='5'):
+                if (self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login)) != "admin"):
+                    print('Nie masz uprawnień')
+                else:
+                    self.usunHus()
             elif(konsola =='6'):   
                 print('Powodzenia w dalszych biegach.')
                 break
@@ -136,15 +142,20 @@ class Husaria_py:
         haslo = input('Podaj hasło zawodnika: ')
         self.cursor.execute("insert into logowanie (id_zawodnika, login, haslo) values ('%i', '%s','%s')" % (lista, login, haslo))
         self.conn.commit()
+        print('Zawodnik został dodany')
     def usunHus(self):
         nazwisko_us = input('Podaj nazwisko zawodnika, którego chcesz usunąć? ')
-        print('Czy na pewno chcesz usunąć zawodnika: ' + (nazwisko_us))
-        self.cursor.execute("select id_zawodnika from zawodnicy where nazwisko = '%s'" % nazwisko_us)
-        id_zawodnika_us = self.cursor.fetchall()
-        id_zawodnika_us = int(((id_zawodnika_us[0])[0]))
-        self.cursor.execute("delete from logowanie where logowanie.id_zawodnika = '%i'" % (id_zawodnika_us))
-        self.cursor.execute("delete from zawodnicy where nazwisko='%s'" % (nazwisko_us))
-        self.conn.commit()
+        potwierdzenie = input('Czy na pewno chcesz usunąć zawodnika: ' + (nazwisko_us) +'(T/N) ')
+        if potwierdzenie == 'T':
+            self.cursor.execute("select id_zawodnika from zawodnicy where nazwisko = '%s'" % nazwisko_us)
+            id_zawodnika_us = self.cursor.fetchall()
+            id_zawodnika_us = int(((id_zawodnika_us[0])[0]))
+            self.cursor.execute("delete from logowanie where logowanie.id_zawodnika = '%i'" % (id_zawodnika_us))
+            self.cursor.execute("delete from zawodnicy where nazwisko='%s'" % (nazwisko_us))
+            self.conn.commit()
+            print('Zawodnik został usunięty')
+        else:
+            print('Usuwanie się nie powiodło')
         
 hus1 = Husaria_py()
 hus1.start()
