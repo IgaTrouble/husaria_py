@@ -156,6 +156,74 @@ class Husaria_py:
             print('Zawodnik został usunięty')
         else:
             print('Usuwanie się nie powiodło')
-        
+            
+    def ligaHus(self):
+        self.cursor.execute("select id_wyniku, miejsce_open, punkty from wyniki")  
+        LH = self.cursor.fetchall()
+        for v in LH:
+            id_wyniku = v[0]
+            miejsce_open= v[1]
+            punkty = v[2]
+            
+            if (v[2] == None):
+                if (v[1] == 1):
+                    punkty = 100
+                elif (v[1] == 2):
+                    punkty = 95 
+                elif (v[1] == 3):
+                    punkty = 90
+                elif (v[1] > 3 and v[1] < 11):
+                    punkty = 80                
+                elif (v[1] > 10 and v[1] <= 70):
+                    punkty = 90-v[1]
+                else:
+                    punkty = 1
+                self.waga()        
+            self.cursor.execute("update wyniki set punkty = '%d' where id_wyniku= '%i'" % (punkty, id_wyniku));                       
+            self.conn.commit()                   
+        self.ligaWyniki()       
+  
+    def waga (self):
+        self.cursor.execute("select id_wyniku, dystans_km, nazwa_zawodow, punkty from wyniki_glowna")  
+        LW = self.cursor.fetchall()
+        wagaKM = 0
+        wagaZ = 0
+        for v in LW:
+            id_wyniku = v[0]
+            dystans_km = v[1]
+            nazwa_zawodow = v[2]
+            punkty =v[3]
+            if (v[1] <10):
+                wagaKM = 1.0
+            elif (v[1] < 20):
+                wagaKM = 1.5 
+            elif (v[1] > 21):
+                wagaKM = 1.9                
+            else:
+                wagaKM = 1
+            punkty = round(punkty * wagaKM,2)
+            if (v[2] == "Runmageddon"):
+                wagaZ = 1.0 
+            elif (v[2] =="Spartan"):
+                wagaZ = 1.5               
+            elif (v[2] == "Barbarian"):
+                wagaZ = 2.0
+            punkty = round(punkty * wagaZ,2)
+            self.cursor.execute("update wyniki set punkty = '%d' where id_wyniku= '%i'" % (punkty, id_wyniku));
+            self.conn.commit()  
+            
+            
+    def ligaWyniki(self):
+        self.cursor.execute("select id_zawodnika, imie, nazwisko, sum(punkty) as razem from wyniki_glowna group by id_zawodnika order by razem desc") 
+        TG = self.cursor.fetchall()
+        print('%10s|%15s|%15s|%15s|' % ('miejsce', 'imie', 'nazwisko', 'punkty'))  
+        id=0
+        for v in TG:
+            id+=1
+            imie = v[1]
+            nazwisko = v[2]
+            punkty =v[3]
+            print('%10s|%15s|%15s|%15s|' % (id, imie, nazwisko, punkty))
+
 hus1 = Husaria_py()
 hus1.start()

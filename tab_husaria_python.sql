@@ -107,3 +107,32 @@ WHERE
         AND logowanie.id_zawodnika = zawodnicy.id_zawodnika;
 select * from tab_glowna;
 select * from moje_wyniki;
+select * from wyniki;
+select * from dystans;
+
+
+create view wyniki_glowna as select
+	zawodnicy.id_zawodnika,
+    imie,
+    nazwisko,
+	nazwa_zawodow,
+    nazwa_dystansu,
+    dystans_km,
+    miejsce_open,
+    punkty,
+    wyniki.id_wyniku
+FROM
+    zawodnicy,
+    wyniki,
+    zawody,
+    dystans
+WHERE
+    zawodnicy.id_zawodnika = wyniki.id_zawodnika
+        AND wyniki.id_dystansu = dystans.id_dystansu
+        AND dystans.id_zawodow = zawody.id_zawodow;
+
+select * from wyniki_glowna;   
+#drop view wyniki_glowna;     
+   
+select imie, nazwa_zawodow, sum(punkty) as razem from wyniki_glowna group by id_zawodnika order by razem desc; 
+        
