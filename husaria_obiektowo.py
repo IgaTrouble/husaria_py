@@ -82,12 +82,19 @@ class Husaria_py:
             elif(konsola == '3'):
                 self.zmianaHasla()
             elif(konsola =='4'):
-                if (self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login)) != "admin"):
+                self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login))
+                res = self.cursor.fetchall()
+                res = ((res[0])[0])                
+                if (res != "admin"):
                     print('Nie masz uprawnień')
                 else:
                     self.dodajHus()
             elif(konsola =='5'):
-                if (self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login)) != "admin"):
+                self.cursor.execute("select rola from logowanie where login = '%s'" % (self.userLogged.login))
+                res = self.cursor.fetchall()
+                res = ((res[0])[0])
+                print (res)
+                if (res != "admin"):
                     print('Nie masz uprawnień')
                 else:
                     self.usunHus()
